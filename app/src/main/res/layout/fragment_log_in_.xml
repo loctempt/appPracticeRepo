@@ -1,6 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-</LinearLayout>
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="162dp"
+        android:ems="10"
+        android:hint="账号"
+        android:inputType="textPersonName"
+        android:textColor="#000000"
+        android:textColorHint="@color/textgrey"
+        android:textSize="15dp" />
+
+    <EditText
+        android:id="@+id/userpwd"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="229dp"
+        android:ems="10"
+        android:hint="密码"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="false"
+        android:singleLine="false"
+        android:textColor="#000000"
+        android:textColorHint="@color/textgrey"
+        android:textSize="15dp"/>
+
+    <Button
+        android:id="@+id/loginbtn"
+        android:layout_width="280dp"
+        android:layout_height="32dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="236dp"
+        android:background="@drawable/shape"
+        android:text="登陆"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/forgetpwdbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="23dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/loginbtn"
+        android:layout_marginBottom="192dp"
+        android:background="@android:color/transparent"
+        android:text="忘记密码？"
+        android:textAllCaps="false"
+        android:textColor="@color/textblue"
+        android:textSize="12sp"
+        android:typeface="normal" />
+
+    <Button
+        android:id="@+id/registerbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="23dp"
+        android:layout_alignEnd="@+id/loginbtn"
+        android:layout_alignTop="@+id/forgetpwdbtn"
+        android:background="@android:color/transparent"
+        android:text="新用户注册"
+        android:textAllCaps="false"
+        android:textColor="@color/textblue"
+        android:textSize="12sp"
+        android:typeface="normal" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/shape"
+         />
+
+
+</RelativeLayout>

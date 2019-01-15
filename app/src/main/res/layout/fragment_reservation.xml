@@ -1,6 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/usercondition"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:ems="10"
+        android:enabled="true"
+        android:gravity="top"
+        android:hint="病情描述"
+        android:maxLines="10"
+        android:minLines="8"
+        android:scrollbars="vertical"
+        android:selectAllOnFocus="false"
+        android:singleLine="false"
+        android:textColor="#000000"
+        android:textColorHint="@color/textgrey"
+        android:textSize="15dp"
+        android:outlineSpotShadowColor="@color/textgrey" />
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/usercondition"
+        android:layout_marginTop="81dp"
+        android:ems="10"
+        android:hint="姓名"
+        android:inputType="textPersonName"
+        android:textColor="#000000"
+        android:textColorHint="@color/textgrey"
+        android:textSize="15dp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/usercondition"
+        android:layout_marginTop="144dp"
+        android:text="性别"
+        android:textColor="@color/textgrey"
+        android:textSize="15dp" />
+
+    <RadioGroup
+        android:id="@+id/sexradioGroup"
+        android:layout_width="209dp"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/usercondition"
+        android:layout_marginTop="135dp"
+        android:orientation="horizontal"
+        android:textSize="15dp">
+
+        <RadioButton
+            android:id="@+id/radio0"
+            android:layout_width="82dp"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="男"
+            android:textColor="@color/textgrey" />
+
+        <RadioButton
+            android:id="@+id/radio1"
+            android:layout_width="83dp"
+            android:layout_height="wrap_content"
+            android:text="女"
+            android:textColor="@color/textgrey" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/userage"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/usercondition"
+        android:layout_alignTop="@+id/username"
+        android:ems="10"
+        android:hint="出生年月"
+        android:inputType="textPersonName"
+        android:textColor="#000000"
+        android:textColorHint="@color/textgrey"
+        android:textSize="15dp" />
+
+
+    <Button
+        android:id="@+id/registerbtn"
+        android:layout_width="280dp"
+        android:layout_height="32dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="132dp"
+        android:background="@drawable/shape"
+        android:text="预约"
+        android:textColor="#ffffff" />
+
+</RelativeLayout>
