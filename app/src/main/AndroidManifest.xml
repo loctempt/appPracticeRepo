@@ -22,4 +22,6 @@
         <activity android:name=".detailInfoActivity"/>
         <activity android:name=".reservationActivity"/>
     </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>

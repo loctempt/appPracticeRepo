@@ -41,47 +41,25 @@
         android:layout_height="32dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="236dp"
+        android:layout_marginBottom="222dp"
         android:background="@drawable/shape"
         android:text="登陆"
         android:textColor="#ffffff" />
 
-    <Button
-        android:id="@+id/forgetpwdbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="23dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/loginbtn"
-        android:layout_marginBottom="192dp"
-        android:background="@android:color/transparent"
-        android:text="忘记密码？"
-        android:textAllCaps="false"
-        android:textColor="@color/textblue"
-        android:textSize="12sp"
-        android:typeface="normal" />
 
     <Button
         android:id="@+id/registerbtn"
         android:layout_width="wrap_content"
         android:layout_height="23dp"
-        android:layout_alignEnd="@+id/loginbtn"
-        android:layout_alignTop="@+id/forgetpwdbtn"
+        android:layout_centerInParent="true"
         android:background="@android:color/transparent"
-        android:text="新用户注册"
+        android:text="没有账户，注册一个？"
         android:textAllCaps="false"
         android:textColor="@color/textblue"
         android:textSize="12sp"
         android:typeface="normal" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/shape"
-         />
+
 
 
 </RelativeLayout>

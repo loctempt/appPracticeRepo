@@ -52,7 +52,7 @@
         android:textColorHint="@color/textgrey" />
 
     <EditText
-        android:id="@+id/userreinputpwd"
+        android:id="@+id/userchecknum"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -71,7 +71,7 @@
         android:id="@+id/checknumbtn"
         android:layout_width="117dp"
         android:layout_height="33dp"
-        android:layout_alignBottom="@+id/userreinputpwd"
+        android:layout_alignBottom="@+id/userchecknum"
         android:layout_alignEnd="@+id/username"
         android:background="@drawable/shape"
         android:text="获取验证码"
