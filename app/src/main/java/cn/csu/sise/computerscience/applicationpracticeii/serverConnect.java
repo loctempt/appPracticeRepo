@@ -7,7 +7,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -15,8 +21,24 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class serverConnect {
-    private Context context;
-    private final OkHttpClient client=new OkHttpClient();
+    private static final String TAG = "serverConnect";
+    private static Context context;
+    private static final HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
+    private static final OkHttpClient client = new OkHttpClient.Builder().cookieJar(new CookieJar() {
+        @Override
+        public void saveFromResponse(HttpUrl httpUrl, List<Cookie> list) {
+            cookieStore.put(httpUrl.host(), list);
+            context.getSharedPreferences("cookie", Context.MODE_PRIVATE).edit();
+
+
+        }
+
+        @Override
+        public List<Cookie> loadForRequest(HttpUrl httpUrl) {
+            List<Cookie> cookies = cookieStore.get(httpUrl.host());
+            return cookies != null ? cookies : new ArrayList<Cookie>();
+        }
+    }).build();
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public serverConnect(Context context) {
@@ -39,13 +61,14 @@ public class serverConnect {
                 .url(url)
                 .post(body)
                 .build();
-        Log.e("body: ",body.toString());
+        Log.d(TAG, body.toString());
+        Log.d(TAG, "runPost: " + json);
         Response response = client.newCall(request).execute();
-        Log.e("response: ",response.toString());
+        Log.d(TAG, response.toString());
 
         if (response.isSuccessful()) {
-            String responseStr=response.body().toString();
-            JSONObject responseJson=new JSONObject(responseStr);
+            String responseStr = response.body().string();
+            JSONObject responseJson = new JSONObject(responseStr);
             return responseJson;
         } else {
             throw new IOException("Unexpected code " + response);

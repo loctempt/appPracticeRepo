@@ -38,8 +38,6 @@ public class registerFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_register, parent, false);
         muserName=v.findViewById(R.id.username);
 
-        msharedPreferences.edit().putString("userName",muserName.getText().toString()).apply();
-
         musrPwd=v.findViewById(R.id.userpwd);
         muserTel=v.findViewById(R.id.usertel);
         muserchecknum=v.findViewById(R.id.userchecknum);
@@ -62,55 +60,63 @@ public class registerFragment extends Fragment {
         return v;
     }
 
-    private class checknumFetchTask extends AsyncTask<Void, Void, Void> {
+    private class checknumFetchTask extends AsyncTask<Void, Void, JSONObject> {
         @Override
-        protected Void doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
             try {
                 JSONObject jsonObject = new JSONObject()
                         .put("userTel", muserTel.getText());
                  responseJson = new serverConnect(getContext()).runPost(UrlBase.BASE+"require_validation", jsonObject.toString());
+
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+            return responseJson;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject responseJson) {
+            super.onPostExecute(responseJson);
+            try {
                 if (responseJson.getString("status").equals("ok")) {
                     Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
                 }
-            } catch (JSONException | IOException e) {
+            } catch (JSONException e){
                 e.printStackTrace();
             }
-            return null;
         }
     }
 
-    private class accountFetchTask extends AsyncTask<Void, Void, Void> {
+    private class accountFetchTask extends AsyncTask<Void, Void, JSONObject> {
         @Override
-        protected Void doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
             try {
                 JSONObject jsonObject = new JSONObject()
-                        .put("username", msharedPreferences.getString("username", "null"))
+                        .put("username", muserName.getText())
                         .put("userPassword", musrPwd.getText())
                         .put("userTel",muserTel.getText())
                         .put("validationCode",muserchecknum.getText());
                responseJson=new serverConnect(getContext()).runPost(UrlBase.BASE+"account_register", jsonObject.toString());
-                if(responseJson.getString("status").equals("ok")){
-                    Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
-                }
             } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return responseJson;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(JSONObject responseJson) {
+            super.onPostExecute(responseJson);
             try {
                 if(responseJson.getString("status").equals("ok")){
                     Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(getContext(), MainActivity.class);
                     i.putExtra(Intent.EXTRA_TEXT, msharedPreferences.getString("username", "null"));
+                    msharedPreferences.edit().putString("userName",muserName.getText().toString()).apply();
                     startActivity(i);
+                } else {
+                    Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

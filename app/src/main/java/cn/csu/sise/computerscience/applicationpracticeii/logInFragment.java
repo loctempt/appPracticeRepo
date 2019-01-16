@@ -38,11 +38,11 @@ public class logInFragment extends Fragment {
         muserName = v.findViewById(R.id.username);
         muserPwd = v.findViewById(R.id.userpwd);
 
-        msharedPreferences.edit().putString("username", muserName.getText().toString()).apply();
         mloginBtn = v.findViewById(R.id.loginbtn);
         mloginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                msharedPreferences.edit().putString("username", muserName.getText().toString()).apply();
                 new accountFetchTask().execute();
             }
         });
@@ -59,33 +59,32 @@ public class logInFragment extends Fragment {
         return v;
     }
 
-    private class accountFetchTask extends AsyncTask<Void, Void, Void> {
+    private class accountFetchTask extends AsyncTask<Void, Void, JSONObject> {
         @Override
-        protected Void doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
             try {
                 JSONObject jsonObject = new JSONObject()
                         .put("username", msharedPreferences.getString("username", "null"))
                         .put("userPassword", muserPwd.getText());
                 responseJson=new serverConnect(getContext()).runPost(UrlBase.BASE+"login.json", jsonObject.toString());
-                if(responseJson.getString("status").equals("ok")){
-                    Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
-                }
+
             } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return responseJson;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(JSONObject responseJson) {
+            super.onPostExecute(responseJson);
             try {
                 if(responseJson.getString("status").equals("ok")) {
                     Intent i = new Intent(getContext(), MainActivity.class);
                     i.putExtra(Intent.EXTRA_TEXT, msharedPreferences.getString("username", "null"));
+                    Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
                     startActivity(i);
+                }else{
+                    Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
