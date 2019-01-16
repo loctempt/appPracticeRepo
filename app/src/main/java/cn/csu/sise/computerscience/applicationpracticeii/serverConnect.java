@@ -28,9 +28,6 @@ public class serverConnect {
         @Override
         public void saveFromResponse(HttpUrl httpUrl, List<Cookie> list) {
             cookieStore.put(httpUrl.host(), list);
-            context.getSharedPreferences("cookie", Context.MODE_PRIVATE).edit();
-
-
         }
 
         @Override
@@ -74,5 +71,6 @@ public class serverConnect {
             throw new IOException("Unexpected code " + response);
         }
     }
+
 
 }

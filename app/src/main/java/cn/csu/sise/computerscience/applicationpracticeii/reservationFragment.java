@@ -38,18 +38,18 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        msharedPreferences=getContext().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        scheduleId=getActivity().getIntent().getStringExtra("scheduleId");
+        msharedPreferences = getContext().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        scheduleId = getActivity().getIntent().getStringExtra("scheduleId");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_reservation, parent, false);
-        muserAge=v.findViewById(R.id.userage);
-        muserName=v.findViewById(R.id.username);
-        musrCondition=v.findViewById(R.id.usercondition);
+        muserAge = v.findViewById(R.id.userage);
+        muserName = v.findViewById(R.id.username);
+        musrCondition = v.findViewById(R.id.usercondition);
 
-        mreservationBtn=v.findViewById(R.id.reservationbtn);
+        mreservationBtn = v.findViewById(R.id.reservationbtn);
         mreservationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,8 +57,8 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
             }
         });
 
-        muserSex=v.findViewById(R.id.sexradioGroup);
-        RadioButton rMale=v.findViewById(R.id.radio0);
+        muserSex = v.findViewById(R.id.sexradioGroup);
+        RadioButton rMale = v.findViewById(R.id.radio0);
         RadioButton rFemale = v.findViewById(R.id.radio1);
         muserSex.setOnCheckedChangeListener(this);
         return v;
@@ -70,15 +70,15 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
             try {
                 JSONObject jsonObject = new JSONObject()
                         .put("patientName", muserName.getText())
-                        .put("patientSex", msharedPreferences.getString("userSex","男").toString())
-                        .put("patientAge",muserAge.getText())
-                        .put("patientCondition",musrCondition.getText())
-                        .put("scheduleId",scheduleId);
-                responseJson=new serverConnect(getContext()).runPost(UrlBase.BASE+"data_alter/new_reservation", jsonObject.toString());
-                if(responseJson.getString("status").equals("ok")){
-                    Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
+                        .put("patientSex", msharedPreferences.getString("userSex", "男").toString())
+                        .put("patientAge", muserAge.getText())
+                        .put("patientCondition", musrCondition.getText())
+                        .put("scheduleId", scheduleId);
+                responseJson = new serverConnect(getContext()).runPost(UrlBase.BASE + "data_alter/new_reservation", jsonObject.toString());
+                if (responseJson.getString("status").equals("ok")) {
+                    Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException | IOException e) {
                 e.printStackTrace();
@@ -90,8 +90,8 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             try {
-                if(responseJson.getString("status").equals("ok")){
-                    Toast.makeText(getContext(),responseJson.getString("message"),Toast.LENGTH_SHORT).show();
+                if (responseJson.getString("status").equals("ok")) {
+                    Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(getContext(), MainActivity.class);
                     i.putExtra(Intent.EXTRA_TEXT, msharedPreferences.getString("username", "null"));
                     startActivity(i);
@@ -102,32 +102,25 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
             }
         }
     }
+
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.radio0:
-                msharedPreferences.edit().putString("userSex","男").apply();
+                msharedPreferences.edit().putString("userSex", "男").apply();
                 break;
             case R.id.radio1:
-                msharedPreferences.edit().putString("userSex","女").apply();
+                msharedPreferences.edit().putString("userSex", "女").apply();
                 break;
         }
     }
-//
-//    private class reservationHolder extends RecyclerView.ViewHolder{
-//        public reservationHolder(LayoutInflater inflater,ViewGroup parent) {
-//            super(inflater.inflate(R.layout.select_reservation_item,parent,false));
-//        }
-//    }
-//    private class reservationAdapter extends RecyclerView.Adapter<doctor>{
+
+
+//    private class reservationAdapter extends RecyclerView.Adapter<reservationHolder> {
 //        private List<doctor> mDoctors;
-//        public reservationAdapter(List<doctor> doctors){
-//            mDoctors=doctors;
-//        }
 //
-//        @Override
-//        public void onBindViewHolder(@NonNull doctor doctor, int i) {
-//
+//        public reservationAdapter(List<doctor> mDoctors) {
+//            mDoctors = mDoctors;
 //        }
 //
 //        @Override
@@ -137,8 +130,13 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
 //
 //        @NonNull
 //        @Override
-//        public doctor onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+//        public reservationHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 //            return null;
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(@NonNull reservationHolder holder, int position, @NonNull List<Object> payloads) {
+//            super.onBindViewHolder(holder, position, payloads);
 //        }
 //    }
 }
