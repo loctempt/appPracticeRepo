@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,6 +43,10 @@ public class MyReservationFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_my_reservation, container, false);
         mReservationRecyclerView=v.findViewById(R.id.reservation_recycler_view);
+        mReservationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        mReservationRecyclerView.addItemDecoration(divider);
+
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setTitle(R.string.menu_item_my_reservation);
         new ReservationDetailItemFetchTask().execute();
@@ -77,7 +83,9 @@ public class MyReservationFragment extends Fragment {
                                 reservationDetailJson.getBoolean("overdue")
                         ));
                     }
-                    mReservationRecyclerView.setAdapter(new myReservationAdapter(reservationDetails));
+                    RecyclerView.Adapter<myReservationHolder> adapter = new myReservationAdapter(reservationDetails);
+                    adapter.setHasStableIds(true);
+                    mReservationRecyclerView.setAdapter(adapter);
 
                 }
             } catch (JSONException e) {
@@ -92,7 +100,9 @@ public class MyReservationFragment extends Fragment {
         TextView mReservationName;
         TextView mReservationDoctorName;
         TextView mReservationDoctorPositionalTitle;
+        TextView mA;
         ReservationDetail mReservationDetail;
+        View mView;
 
         public myReservationHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_my_reservation, parent, false));
@@ -100,7 +110,8 @@ public class MyReservationFragment extends Fragment {
             mReservationDoctorName = itemView.findViewById(R.id.doctor_name);
             mReservationDoctorPositionalTitle = itemView.findViewById(R.id.positional_title);
             mReservationName = itemView.findViewById(R.id.user_name);
-
+            mA = itemView.findViewById(R.id.a);
+            mView = itemView;
         }
 
         public void bind(ReservationDetail reservationDetail) {
@@ -109,10 +120,23 @@ public class MyReservationFragment extends Fragment {
             mReservationDoctorName.setText(mReservationDetail.mReservationDoctorName);
             mReservationDoctorPositionalTitle.setText(mReservationDetail.mReservationDoctorPositionalTitle);
             mReservationTime.setText(mReservationDetail.mReservationTime);
-//            if(!mReservationDetail.mOverDue){
+            if(mReservationDetail.mOverDue){
 //               Drawable drawable=myReservationHolder.itemView.getBackground();
-//            }
-
+                mView.setBackgroundColor(getContext().getColor(R.color.backgroundGray));
+                mReservationName.setTextColor(getContext().getColor(R.color.textInvalid));
+                mA.setTextColor(getContext().getColor(R.color.textInvalid));
+                mReservationDoctorName.setTextColor(getContext().getColor(R.color.textInvalid));
+                mReservationDoctorPositionalTitle.setTextColor(getContext().getColor(R.color.textInvalid));
+                mReservationTime.setTextColor(getContext().getColor(R.color.textInvalid));
+            }
+            else{
+                mView.setBackgroundColor(getContext().getColor(R.color.backgroundDefault));
+                mReservationName.setTextColor(getContext().getColor(R.color.textDarkGrey));
+                mA.setTextColor(getContext().getColor(R.color.textDarkGrey));
+                mReservationDoctorName.setTextColor(getContext().getColor(R.color.textDarkGrey));
+                mReservationDoctorPositionalTitle.setTextColor(getContext().getColor(R.color.textDarkGrey));
+                mReservationTime.setTextColor(getContext().getColor(R.color.textDarkGrey));
+            }
         }
     }
 
@@ -141,6 +165,12 @@ public class MyReservationFragment extends Fragment {
         public int getItemCount() {
             return mDetails.size();
         }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
     }
 
 }

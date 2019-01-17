@@ -79,7 +79,7 @@ public class MainFragment extends Fragment {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.menu_item_my_reservation:
-//                startActivity(new Intent(getContext(), ));
+                startActivity(new Intent(getContext(), MyReservationActivity.class));
                 break;
             case R.id.menu_item_logout:
                 new LogoutTask().execute();

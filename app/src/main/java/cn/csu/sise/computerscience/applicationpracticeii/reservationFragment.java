@@ -1,11 +1,17 @@
 package cn.csu.sise.computerscience.applicationpracticeii;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +22,19 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alipay.sdk.app.EnvUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Map;
+
+import cn.csu.sise.computerscience.applicationpracticeii.alipay.PayDemoActivity;
+import cn.csu.sise.computerscience.applicationpracticeii.alipay.PayResult;
 
 public class reservationFragment extends Fragment implements RadioGroup.OnCheckedChangeListener {
+    public static final String TAG = "reservationFragment";
     private EditText muserAge;
     private EditText muserName;
     private EditText musrCondition;
@@ -37,6 +50,7 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
         super.onCreate(savedInstanceState);
         msharedPreferences = getContext().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         mScheduleId = getActivity().getIntent().getStringExtra(reservationActivity.EXTRA_SCHEDULE_ID);
+        EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
     }
 
     @Override
@@ -48,9 +62,25 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
 
         mreservationBtn = v.findViewById(R.id.reservationbtn);
         mreservationBtn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("HandlerLeak")
             @Override
             public void onClick(View v) {
-                new reserveFetchTask().execute();
+                PayDemoActivity.payV2(getActivity(), new Handler() {
+                    @SuppressWarnings("unused")
+                    public void handleMessage(Message msg) {
+                        @SuppressWarnings("unchecked")
+                        PayResult payResult = new PayResult((Map<String, String>) msg.obj);
+                        String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+                        String resultStatus = payResult.getResultStatus();
+                        // 判断resultStatus 为9000则代表支付成功
+                        if (TextUtils.equals(resultStatus, "9000")) {
+                            Log.d(TAG, "handleMessage: 支付成功");
+                            new reserveFetchTask().execute();
+                        } else {
+                            Log.d(TAG, "handleMessage: 支付失败");
+                        }
+                    }
+                });
             }
         });
 
@@ -58,6 +88,9 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
         RadioButton rMale = v.findViewById(R.id.radio0);
         RadioButton rFemale = v.findViewById(R.id.radio1);
         muserSex.setOnCheckedChangeListener(this);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getContext().getString(R.string.reservation_title));
+
         return v;
     }
 
