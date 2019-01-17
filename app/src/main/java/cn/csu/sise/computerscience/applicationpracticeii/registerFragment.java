@@ -27,6 +27,7 @@ public class registerFragment extends Fragment {
     private Button mregisterBtn;
     private SharedPreferences msharedPreferences;
     private JSONObject responseJson;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

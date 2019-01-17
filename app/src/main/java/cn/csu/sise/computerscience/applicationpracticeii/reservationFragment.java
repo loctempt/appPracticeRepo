@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
 
 public class reservationFragment extends Fragment implements RadioGroup.OnCheckedChangeListener {
     private EditText muserAge;
@@ -33,13 +30,13 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
     private TextView muserSexTv;
     private SharedPreferences msharedPreferences;
     private JSONObject responseJson;
-    private String scheduleId;
+    private String mScheduleId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         msharedPreferences = getContext().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        scheduleId = getActivity().getIntent().getStringExtra("scheduleId");
+        mScheduleId = getActivity().getIntent().getStringExtra(reservationActivity.EXTRA_SCHEDULE_ID);
     }
 
     @Override
@@ -73,13 +70,8 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
                         .put("patientSex", msharedPreferences.getString("userSex", "男").toString())
                         .put("patientAge", muserAge.getText())
                         .put("patientCondition", musrCondition.getText())
-                        .put("scheduleId", scheduleId);
+                        .put("scheduleId", mScheduleId);
                 responseJson = new serverConnect(getContext()).runPost(UrlBase.BASE + "data_alter/new_reservation", jsonObject.toString());
-                if (responseJson.getString("status").equals("ok")) {
-                    Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
-                }
             } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
@@ -91,12 +83,13 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
             super.onPostExecute(aVoid);
             try {
                 if (responseJson.getString("status").equals("ok")) {
-                    Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(getContext(), MainActivity.class);
-                    i.putExtra(Intent.EXTRA_TEXT, msharedPreferences.getString("username", "null"));
-                    startActivity(i);
+                    getActivity().finish();
+//                    i.putExtra(Intent.EXTRA_TEXT, msharedPreferences.getString("username", "null"));
+//                    startActivity(i);
 //                    todo 没有写支付功能
                 }
+                Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

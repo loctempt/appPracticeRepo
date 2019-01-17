@@ -5,20 +5,26 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.List;
 
 public class detailInfoFragment extends Fragment {
+    public static final String TAG = "detailInfoFragment";
     private ImageView mimg;
     private TextView mname;
     private TextView mdepartment;
@@ -35,7 +41,7 @@ public class detailInfoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        doctorId = getActivity().getIntent().getStringExtra("doctorId");
+        doctorId = getActivity().getIntent().getStringExtra(detailInfoActivity.EXTRA_DOCTOR_ID);
         new detailInfoFetchTask().execute();
     }
 
@@ -43,7 +49,7 @@ public class detailInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_detail_info, parent, false);
 
-        mimg = v.findViewById(R.id.img);
+//        mimg = v.findViewById(R.id.img);
         mname = v.findViewById(R.id.name);
         mdepartment = v.findViewById(R.id.department);
         mpositionalTitle = v.findViewById(R.id.positionalTitle);
@@ -53,10 +59,13 @@ public class detailInfoFragment extends Fragment {
         mReservationRecyclerView = v.findViewById(R.id.select_reservation_recycle_list_view);
 
         mReservationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        mReservationRecyclerView.addItemDecoration(divider);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.detail_title);
 
         return v;
     }
-
 
 
     private class detailInfoFetchTask extends AsyncTask<Void, Void, Void> {
@@ -65,8 +74,8 @@ public class detailInfoFragment extends Fragment {
             try {
                 JSONObject jsonObject = new JSONObject()
                         .put("doctorId", doctorId);
-                responseJsonInfo = new serverConnect(getContext()).runPost(UrlBase.BASE+"information/doctor_information", jsonObject.toString());
-                responseJsonSchedule = new serverConnect(getContext()).runPost(UrlBase.BASE+"information/doctor_schedule", jsonObject.toString());
+                responseJsonInfo = new serverConnect(getContext()).runPost(UrlBase.BASE + "information/doctor_information", jsonObject.toString());
+                responseJsonSchedule = new serverConnect(getContext()).runPost(UrlBase.BASE + "information/doctor_schedule", jsonObject.toString());
             } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
@@ -77,7 +86,9 @@ public class detailInfoFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             try {
-                if(responseJsonInfo.getString("status").equals("ok")&&responseJsonSchedule.getString("status").equals("ok")){
+                if (responseJsonInfo.getString("status").equals("ok") && responseJsonSchedule.getString("status").equals("ok")) {
+                    Log.d(TAG, "onPostExecute: 信息" + responseJsonInfo);
+                    Log.d(TAG, "onPostExecute: 列表" + responseJsonSchedule);
                     JSONObject docPersonnalInfo = responseJsonInfo.getJSONObject("extra");
                     mjob.setText(docPersonnalInfo.getString("doctorJob"));
                     mdepartment.setText(docPersonnalInfo.getString("doctorDepartment"));
@@ -85,7 +96,11 @@ public class detailInfoFragment extends Fragment {
                     mpositionalTitle.setText(docPersonnalInfo.getString("doctorPositionalTitle"));
                     mtel.setText(docPersonnalInfo.getString("doctorTel"));
                     mintroduction.setText(docPersonnalInfo.getString("doctorIntroduction"));
-//                todo 没写预约时间列表 imageview 医生头像没有处理
+
+                    Doctor doctor = new Doctor();
+                    doctor.doctorSchedules = doctor.parseDoctorSchedule(responseJsonSchedule);
+                    mReservationRecyclerView.setAdapter(new reservationAdapter(doctor));
+//                todo imageview 医生头像没有处理
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -97,19 +112,33 @@ public class detailInfoFragment extends Fragment {
         TextView mReservationTime;
         Button mReservationButton;
         Doctor.DoctorSchedule mDoctorSchedule;
+
         public reservationHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.select_reservation_item, parent, false));
             mReservationTime = itemView.findViewById(R.id.reserve_time);
             mReservationButton = itemView.findViewById(R.id.reservationbtn);
         }
-        public void bind(Doctor.DoctorSchedule doctorSchedule){
+
+        public void bind(Doctor.DoctorSchedule doctorSchedule) {
             mDoctorSchedule = doctorSchedule;
             mReservationTime.setText(mDoctorSchedule.doctorOnDutyDate + mDoctorSchedule.doctorOnDutyTime);
             mReservationButton.setEnabled(mDoctorSchedule.available);
+            if(!mDoctorSchedule.available){
+                mReservationButton.setBackground(getContext().getDrawable(R.drawable.shape_disabled));
+                mReservationButton.setTextColor(getContext().getColor(R.color.white));
+                mReservationButton.setText("无号");
+            }
+            mReservationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String scheduleId = mDoctorSchedule.scheduleId;
+                    startActivity(reservationActivity.getIntent(getContext(), scheduleId));
+                }
+            });
         }
     }
 
-    private class reservationAdapter extends RecyclerView.Adapter<reservationHolder>{
+    private class reservationAdapter extends RecyclerView.Adapter<reservationHolder> {
 
         private Doctor mDoctor;
 
