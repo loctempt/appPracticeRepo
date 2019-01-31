@@ -226,7 +226,7 @@ public class MainFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Log.d(TAG, "onClick: " + mDepartmentName);
-            new DoctorsFetchTask().execute(mDepartmentName);
+                new DoctorsFetchTask().execute(mDepartmentName);
         }
     }
 

@@ -2,13 +2,17 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
 
     <EditText
         android:id="@+id/usercondition"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="210dp"
         android:ems="10"
         android:enabled="true"
         android:gravity="top"
@@ -20,8 +24,7 @@
         android:singleLine="false"
         android:textColor="#000000"
         android:textColorHint="@color/textgrey"
-        android:textSize="15dp"
-        android:outlineSpotShadowColor="@color/textgrey" />
+        android:textSize="15dp" />
 
     <EditText
         android:id="@+id/username"
@@ -97,5 +100,4 @@
         android:background="@drawable/shape"
         android:text="预约"
         android:textColor="#ffffff" />
-
 </RelativeLayout>

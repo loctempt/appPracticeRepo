@@ -27,7 +27,8 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".registerActivity" />
         <activity android:name=".detailInfoActivity"/>
-        <activity android:name=".reservationActivity"/>
+        <activity android:name=".reservationActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".MyReservationActivity"/>
     </application>
 

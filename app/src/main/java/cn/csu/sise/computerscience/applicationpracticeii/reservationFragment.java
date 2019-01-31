@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -100,7 +101,7 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
             try {
                 JSONObject jsonObject = new JSONObject()
                         .put("patientName", muserName.getText())
-                        .put("patientSex", msharedPreferences.getString("userSex", "男").toString())
+                        .put("patientSex", msharedPreferences.getString("userSex", "无").toString())
                         .put("patientAge", muserAge.getText())
                         .put("patientCondition", musrCondition.getText())
                         .put("scheduleId", mScheduleId);
@@ -117,10 +118,10 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
             try {
                 if (responseJson.getString("status").equals("ok")) {
                     Intent i = new Intent(getContext(), MainActivity.class);
+                    startActivity(i);
                     getActivity().finish();
 //                    i.putExtra(Intent.EXTRA_TEXT, msharedPreferences.getString("username", "null"));
 //                    startActivity(i);
-//                    todo 没有写支付功能
                 }
                 Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
@@ -141,28 +142,4 @@ public class reservationFragment extends Fragment implements RadioGroup.OnChecke
         }
     }
 
-
-//    private class reservationAdapter extends RecyclerView.Adapter<reservationHolder> {
-//        private List<doctor> mDoctors;
-//
-//        public reservationAdapter(List<doctor> mDoctors) {
-//            mDoctors = mDoctors;
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return 0;
-//        }
-//
-//        @NonNull
-//        @Override
-//        public reservationHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-//            return null;
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(@NonNull reservationHolder holder, int position, @NonNull List<Object> payloads) {
-//            super.onBindViewHolder(holder, position, payloads);
-//        }
-//    }
 }
